@@ -1,0 +1,25 @@
+@media (min-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    #tictactoe {
+        padding: 0 20px 0 20px;
+    }
+
+    #game {
+        grid-template-columns: 150px 150px 150px;
+        grid-template-rows: 150px 150px 150px;
+    }
+
+    p {
+        font-size: 1.5em;
+    }
+
+    #reset-button {
+        font-size: 2em;
+        height: 50px;
+        padding: 5px 15px 5px 15px;
+        margin-bottom: 20px;
+    }
+}
