@@ -1,0 +1,8 @@
+public/cross-m.png filter=lfs diff=lfs merge=lfs -text
+public/cross-s.png filter=lfs diff=lfs merge=lfs -text
+public/favicon.ico filter=lfs diff=lfs merge=lfs -text
+public/background.jpeg filter=lfs diff=lfs merge=lfs -text
+public/circle-l.png filter=lfs diff=lfs merge=lfs -text
+public/circle-m.png filter=lfs diff=lfs merge=lfs -text
+public/circle-s.png filter=lfs diff=lfs merge=lfs -text
+public/cross-l.png filter=lfs diff=lfs merge=lfs -text
