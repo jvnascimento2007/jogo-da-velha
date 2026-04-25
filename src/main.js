@@ -54,6 +54,7 @@ function drawBoard(symbols) {
     const boardSpaces = document.getElementsByClassName('space')
     // itera cada um deles colocando os respectivos simbolos de 'symbols'
     Array.from(boardSpaces).forEach((space, index) => {
+        space.innerHTML = ''
         if(symbols[index] == 'X') {
             const crossPicture = createCrossPicture()
             space.appendChild(crossPicture)
@@ -69,6 +70,13 @@ function writeMessage(message) {
     const messageParagraph = document.getElementById('game-message')
     messageParagraph.innerHTML = message
 }
+
+// responde ao clique de 'reset-button'
+document.getElementById('reset-button').addEventListener('click', () => {
+    var symbols = ['', '', '', '', '', '', '', '', '']
+    drawBoard(symbols)
+    writeMessage('Jogo resetado!')
+})
 
 // código para testar funções
 var symbols = [
