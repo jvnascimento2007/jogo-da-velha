@@ -1,89 +1,139 @@
-import './style.css'
-import './tablet-768px.css'
+import './style'
 
-// importa imagem do background
-import backgroundImage from './assets/background.jpeg'
-// adiciona a imagem no estilo
-document.getElementsByTagName('main')[0].style.backgroundImage = `url(${backgroundImage})`
+import { createCirclePicture, createCrossPicture, writeMessage } from "./graphics"
 
-// importa imagens dos simbolos (x e circulo)
-import crossSmallImage from './assets/cross-s.png'
-import crossLargeImage from './assets/cross-l.png'
-import circleSmallImage from './assets/circle-s.png'
-import circleLargeImage from './assets/circle-l.png'
+// elementos html
+const boardSpaces = document.getElementsByClassName('space')
+const resetButton = document.getElementById('reset-button')
 
-// cria elemento html do circulo
-function createCirclePicture() {
-    const circlePicture = document.createElement('picture')
-
-    const circleSource = document.createElement('source')
-    circleSource.media = '(min-width: 768px)'
-    circleSource.srcset = circleLargeImage
-
-    circlePicture.appendChild(circleSource)
-
-    const circleImg = document.createElement('img')
-    circleImg.src = circleSmallImage
-
-    circlePicture.appendChild(circleImg)
-
-    return circlePicture
-}
-
-// cria elemento html do x
-function createCrossPicture() {
-    const crossPicture = document.createElement('picture')
-
-    const crossSource = document.createElement('source')
-    crossSource.media = '(min-width: 768px)'
-    crossSource.srcset = crossLargeImage
-
-    crossPicture.appendChild(crossSource)
-
-    const circleImg = document.createElement('img')
-    circleImg.src = crossSmallImage
-
-    crossPicture.appendChild(circleImg)
-
-    return crossPicture
-}
-
-// desenha os simbolos no jogo da velha
-function drawBoard(symbols) {
-    // pega os elementos dos espaços do jogo da velha
-    const boardSpaces = document.getElementsByClassName('space')
-    // itera cada um deles colocando os respectivos simbolos de 'symbols'
-    Array.from(boardSpaces).forEach((space, index) => {
-        space.innerHTML = ''
-        if(symbols[index] == 'X') {
-            const crossPicture = createCrossPicture()
-            space.appendChild(crossPicture)
-        } else if(symbols[index] == 'O') {
-            const circlePicture = createCirclePicture()
-            space.appendChild(circlePicture)
-        }
-    })
-}
-
-// escreve texto no paragrafo 'game-message'
-function writeMessage(message) {
-    const messageParagraph = document.getElementById('game-message')
-    messageParagraph.innerHTML = message
-}
-
-// responde ao clique de 'reset-button'
-document.getElementById('reset-button').addEventListener('click', () => {
-    var symbols = ['', '', '', '', '', '', '', '', '']
-    drawBoard(symbols)
-    writeMessage('Jogo resetado!')
-})
-
-// código para testar funções
-var symbols = [
-    'X', 'O', 'X',
-    'O', 'X', ' ',
-    'X', ' ', 'O'
+// condições de vítoria
+const victoryConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
 ]
 
-writeMessage('Olá, Mundo!')
-drawBoard(symbols)
+// estado do jogo
+var running = false
+var currentTurn = 'X'
+
+// tabuleiro
+var board = ['','','','','','','','','']
+
+// iniciar o jogo
+function main() {
+
+    reset()
+    
+    Array.from(boardSpaces).forEach((space) => {
+        space.addEventListener('click', spaceClicked)
+    })
+
+    resetButton.addEventListener('click', reset)
+
+}
+
+// atualizar espaço
+function updateSpace(index, symbol) {
+
+    const space = boardSpaces[index]
+
+    space.innerHTML = ''
+
+    if(symbol == 'X') {
+        
+        const crossPicture = createCrossPicture()
+        space.appendChild(crossPicture)
+
+        board[index] = 'X'
+
+    } else if(symbol == 'O') {
+        
+        const circlePicture = createCirclePicture()
+        space.appendChild(circlePicture)
+
+        board[index] = 'O'
+    
+    }
+
+}
+
+// muda turno
+function changeTurn() {
+
+    currentTurn = (currentTurn == 'X')? 'O' : 'X'
+    writeMessage(`<strong>Turno:</strong> agora é a vez do ${currentTurn} de jogar!`)
+
+}
+
+// trata o clique no espaço
+function spaceClicked() {
+    
+    if(!running) return;
+
+    var index = Number(this.getAttribute('index'))
+    console.log(index)
+
+    if(board[index] == '') {
+
+        board[index] = currentTurn
+        updateSpace(index, currentTurn)
+        changeTurn()
+        checkVictory()
+
+    }
+
+}
+
+// checa condição de vítoria
+function checkVictory() {
+
+    for(var i = 0; i < victoryConditions.length; i++) {
+
+        const conditions = victoryConditions[i]
+
+        var spaceA = board[conditions[0]]
+        var spaceB = board[conditions[1]]
+        var spaceC = board[conditions[2]]
+
+        if(spaceA == '' || spaceB == '' || spaceC == '') {
+        
+            continue
+        
+        } else if(spaceA == spaceB && spaceB == spaceC) {
+
+            running = false
+
+            writeMessage(`<strong>Vítoria:</strong> ${spaceA} venceu!`)
+
+            break
+
+        }
+
+    }
+
+}
+
+// reseta o jogo
+function reset() {
+    
+    board = ['', '', '', '', '', '', '', '', '']
+
+    currentTurn = 'X'
+
+    running = true
+
+    Array.from(boardSpaces).forEach((space) => {
+        space.innerHTML = ''
+    })
+
+    writeMessage(`<strong>Turno:</strong> agora é a vez do ${currentTurn} de jogar!`)
+
+}
+
+main()
